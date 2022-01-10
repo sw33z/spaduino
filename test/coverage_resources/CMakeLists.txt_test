@@ -1,0 +1,61 @@
+set(MOCKS_BASE_PATH "${CMAKE_SOURCE_DIR}/test/mocks")
+set(
+    MOCK_HEADERS
+    ${MOCKS_BASE_PATH}/ArduinoUnix
+    ${MOCKS_BASE_PATH}/LCDMock
+    ${MOCKS_BASE_PATH}/TM1637Mock
+)
+
+file(GLOB_RECURSE MOCK_SOURCES_CPP CONFIGURE_DEPENDS "${MOCKS_BASE_PATH}/*/*.cpp")
+file(GLOB_RECURSE MOCK_SOURCES_C CONFIGURE_DEPENDS "${MOCKS_BASE_PATH}/*/*.c")
+
+include(CMakePrintHelpers)
+cmake_print_variables(MOCK_SOURCES_C)
+cmake_print_variables(MOCK_SOURCES_CPP)
+
+set(
+    MOCK_SOURCES
+    ${MOCK_SOURCES_C}
+    ${MOCK_SOURCES_CPP}
+)
+
+set (MOCKS_LIB MocksLib PARENT_SCOPE)
+add_library(MocksLib STATIC ${MOCK_SOURCES})
+
+find_package(GTest REQUIRED)
+
+set(FSCONTROLS_LIB_BASE_PATH "${CMAKE_SOURCE_DIR}/lib/FSControls")
+set(CMDMESSENGER_LIB_BASE_PATH "${CMAKE_SOURCE_DIR}/lib/CmdMessenger")
+set(MEMORY_LIB_BASE_PATH "${CMAKE_SOURCE_DIR}/lib/Memory")
+
+
+set(TESTS_BASE_PATH "${CMAKE_SOURCE_DIR}/test/test_native")
+
+set(
+  LIB_INCLUDES
+  ${FSCONTROLS_LIB_BASE_PATH}
+  ${FSCONTROLS_LIB_BASE_PATH}/config
+  ${FSCONTROLS_LIB_BASE_PATH}/display
+  ${FSCONTROLS_LIB_BASE_PATH}/input
+  ${CMDMESSENGER_LIB_BASE_PATH}
+  ${MEMORY_LIB_BASE_PATH}
+  ${TESTS_BASE_PATH}/common
+)
+
+include_directories(${GTEST_INCLUDE_DIR} ${LIB_INCLUDES} ${MOCK_HEADERS})
+
+file(GLOB_RECURSE UNIT_TESTS_SRC CONFIGURE_DEPENDS "${TESTS_BASE_PATH}/*/*.cpp")
+add_executable(unit-tests ${UNIT_TESTS_SRC})
+
+
+target_link_libraries(unit-tests
+					  ${GTEST_LIBRARY}
+                      ${GTEST_MAIN_LIBRARY}
+                      ${CMAKE_BINARY_DIR}/libFSControlsLib.a
+                      MocksLib
+                      pthread
+)
+	
+add_test(unit-tests 
+	     unit-tests
+)

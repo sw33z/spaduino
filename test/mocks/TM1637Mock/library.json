@@ -1,0 +1,10 @@
+{
+    "name": "TM1637Mock",
+    "version": "1.0.0",
+    "build": {
+        "srcFilter": [
+            "+<*.cpp>",
+            "+<*.h>"
+        ]
+    }
+}

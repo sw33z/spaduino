@@ -1,0 +1,11 @@
+{
+    "name": "TM1637_6D",
+    "version": "1.0.0",
+    "description": "6 digit TM1636 7 segments display library",
+    "build": {
+        "srcFilter": [
+            "+<*.cpp>",
+            "+<*.h>"
+        ]
+    }
+}

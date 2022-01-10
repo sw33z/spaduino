@@ -1,0 +1,85 @@
+project(cmake-test-coverage C CXX)
+cmake_minimum_required(VERSION 3.16.3)
+
+set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_PREFIX_PATH}")
+
+add_definitions(
+	-pedantic
+	-Wall
+	-Wextra
+  -DUNIT_TEST
+)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -fno-permissive")
+
+#add_subdirectory(test)
+
+set(CMDMESSENGER_BASE_PATH "${CMAKE_SOURCE_DIR}/lib/CmdMessenger")
+set(FSCONTROLS_BASE_PATH "${CMAKE_SOURCE_DIR}/lib/FSControls")
+set(MEMORY_BASE_PATH "${CMAKE_SOURCE_DIR}/lib/Memory")
+#set(TM1637_BASE_PATH "${CMAKE_SOURCE_DIR}/lib/TM1637_6D")
+set(
+  LIB_SOURCES 
+  # CmdMessenger
+  ${CMDMESSENGER_BASE_PATH}/CmdMessenger.cpp
+
+  # FSControls
+  ${FSCONTROLS_BASE_PATH}/FSAction.cpp
+  ${FSCONTROLS_BASE_PATH}/FSControls.cpp
+  ${FSCONTROLS_BASE_PATH}/FSObject.cpp
+  ${FSCONTROLS_BASE_PATH}/FSState.cpp
+  ${FSCONTROLS_BASE_PATH}/config/FSConfig.cpp
+  ${FSCONTROLS_BASE_PATH}/display/FSValueDisplay.cpp
+  ${FSCONTROLS_BASE_PATH}/display/FSValueLedDisplay.cpp
+  ${FSCONTROLS_BASE_PATH}/display/FSValueTM1637Display.cpp
+  ${FSCONTROLS_BASE_PATH}/input/Input.cpp
+  ${FSCONTROLS_BASE_PATH}/input/InputRotaryEncoder.cpp
+  ${FSCONTROLS_BASE_PATH}/input/InputRotaryEncoderLongPressButton.cpp
+  ${FSCONTROLS_BASE_PATH}/input/InputSwitch.cpp
+
+  # TM1637
+  #${TM1637_BASE_PATH}/TM1637_6D.cpp
+)
+
+set(MOCKS_BASE_PATH "${CMAKE_SOURCE_DIR}/test/mocks")
+set(
+    MOCK_HEADERS
+    ${MOCKS_BASE_PATH}/ArduinoUnix
+    ${MOCKS_BASE_PATH}/LCDMock
+    ${MOCKS_BASE_PATH}/TM1637Mock
+)
+
+set(
+  LIB_INCLUDES
+  ${FSCONTROLS_BASE_PATH}
+  ${FSCONTROLS_BASE_PATH}/config
+  ${FSCONTROLS_BASE_PATH}/display
+  ${FSCONTROLS_BASE_PATH}/input
+  ${CMDMESSENGER_BASE_PATH}
+  ${MEMORY_BASE_PATH}
+  ${TM1637_BASE_PATH}
+  # Mocks
+  ${MOCK_HEADERS}
+)
+
+include_directories(${LIB_INCLUDES})
+add_library(FSControlsLib STATIC ${LIB_SOURCES})
+
+# Enable testing
+enable_testing()
+add_subdirectory(test)
+
+# Enable coverage report
+# TARGETS defines the targets we analyse 
+# FILTER defines the parts that should not be included in the coverage report (tests dir itself)
+# TESTS defines the tests that are going to be executed to create the report
+find_package(CoverageReport)
+enable_coverage_report(
+  TARGETS
+    FSControlsLib
+  FILTER
+    */test/mocks/*
+    */lib/CmdMessenger/*
+  TESTS
+    unit-tests
+)
