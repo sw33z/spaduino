@@ -1,6 +1,5 @@
-![build and test](https://github.com/xavi-garcia-mena/spaduino/actions/workflows/platformio-ci.yml/badge.svg)
-[![codecov](https://codecov.io/gh/xavi-garcia-mena/spaduino/branch/master/graph/badge.svg?token=XFCOET8ML2)](https://codecov.io/gh/xavi-garcia-mena/spaduino)
-
+![build and test](https://github.com/sw33z/spaduino/actions/workflows/platformio-ci.yml/badge.svg)
+[![codecov](https://codecov.io/gh/sw33z/spaduino/branch/master/graph/badge.svg?token=DZWK6EVP0S)](https://codecov.io/gh/sw33z/spaduino)
 # Spaduino
 
 This project is an experiment to create controls for Flight Simulator using [Spad.Next](https://www.spadnext.com).
